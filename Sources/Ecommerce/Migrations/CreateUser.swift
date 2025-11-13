@@ -27,7 +27,7 @@ struct CreateUser: AsyncMigration {
 struct AddIsAdminToUser: AsyncMigration {
     func prepare(on db: any Database) async throws {
         // نستخدم SQLKit لتفادي تكرار العمود
-        if let sql = db as? SQLDatabase {
+        if let sql = db as? any SQLDatabase {
             try await sql.raw("""
                 ALTER TABLE "users"
                 ADD COLUMN IF NOT EXISTS "is_admin" BOOL NOT NULL DEFAULT FALSE;
@@ -41,7 +41,7 @@ struct AddIsAdminToUser: AsyncMigration {
     }
 
     func revert(on db: any Database) async throws {
-        if let sql = db as? SQLDatabase {
+        if let sql = db as? any SQLDatabase {
             try await sql.raw("""
                 ALTER TABLE "users"
                 DROP COLUMN IF EXISTS "is_admin";
